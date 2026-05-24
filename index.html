@@ -5,282 +5,657 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Croix Rond – Le jeu de Yakhya</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#07071a">
+<meta name="theme-color" content="#5BAE00">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Croix Rond">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Lora:ital,wght@0,400;0,600;1,500&family=Caveat:wght@500;600;700&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #07071a;
-  --card: #10102a;
-  --card2: rgba(255,255,255,0.04);
-  --yakhya: #ffb347;
-  --yakhya2: #ff6b00;
-  --yakhya-glow: rgba(255,179,71,0.25);
-  --adv: #a78bfa;
-  --adv2: #6d28d9;
-  --adv-glow: rgba(167,139,250,0.25);
-  --accent: #ff4d6d;
-  --text: #ffffff;
-  --muted: rgba(255,255,255,0.45);
-  --border: rgba(255,255,255,0.08);
+  /* These are overridden by theme classes */
+  --bg: #5BAE00;
+  --bg-alt: #4A9000;
+  --bg-deep: #2D5500;
+  --board-bg: #8B6F47;
+  --board-edge: #6B5435;
+  --cell-bg: #C7B299;
+  --cell-edge: #8B6F47;
+  --primary: #FFAA00;
+  --secondary: #50C878;
+  --accent: #FF5555;
+  --text: #FFFFFF;
+  --text-dark: #1E1E1E;
+  --shadow: rgba(0, 0, 0, 0.4);
 }
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+/* ============================================ */
+/* THEME: YAKHYA (MINECRAFT)                    */
+/* ============================================ */
+body.theme-yakhya {
+  --bg:        #5BAE00;
+  --bg-alt:    #4A9000;
+  --bg-deep:   #2D5500;
+  --board-bg:  #8B6F47;
+  --board-edge:#6B5435;
+  --cell-bg:   #C7B299;
+  --cell-edge: #8B6F47;
+  --primary:   #FFAA00;
+  --secondary: #50C878;
+  --accent:    #FF5555;
+  --text:      #FFFFFF;
+  --text-dark: #1E1E1E;
+  --shadow:    rgba(0, 0, 0, 0.4);
+  font-family: 'VT323', monospace;
+  background: var(--bg);
+}
+
+body.theme-yakhya::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 64px, rgba(0,0,0,0.04) 64px 65px),
+    repeating-linear-gradient(90deg, transparent 0 64px, rgba(0,0,0,0.04) 64px 65px);
+  background-size: 64px 64px;
+}
+
+body.theme-yakhya::after {
+  content: '';
+  position: fixed; bottom: 0; left: 0; right: 0; height: 80px; z-index: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--bg-deep) 80%);
+}
+
+/* ============================================ */
+/* THEME: MAKKA (OLIVE ELEGANT)                 */
+/* ============================================ */
+body.theme-makka {
+  --bg:        #EDE4D0;
+  --bg-alt:    #F5EFE0;
+  --bg-deep:   #D6C9A8;
+  --board-bg:  #FAF6EC;
+  --board-edge: rgba(58,74,38,0.2);
+  --cell-bg:   #F5EFE0;
+  --cell-edge: rgba(58,74,38,0.15);
+  --primary:   #5A6B3A;
+  --secondary: #B89668;
+  --accent:    #C44569;
+  --text:      #2A2D1E;
+  --text-dark: #2A2D1E;
+  --shadow:    rgba(58,74,38,0.12);
+  font-family: 'Lora', Georgia, serif;
+  background: var(--bg);
+}
+
+body.theme-makka::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(184,150,104,0.10), transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(90,107,58,0.10), transparent 60%);
+}
+
+/* ============================================ */
+/* BASE                                         */
+/* ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Nunito', sans-serif;
-  color: var(--text);
   overflow-x: hidden;
   padding: 16px 0;
+  transition: background-color 0.5s ease;
 }
-@media (max-height: 680px) {
-  body { justify-content: flex-start; padding-top: 10px; }
+@media (max-height: 700px) {
+  body { justify-content: flex-start; padding-top: 12px; }
 }
 
-/* ---- ANIMATED BG ---- */
+/* ============================================ */
+/* TOP CONTROLS                                 */
+/* ============================================ */
+.top-controls {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.theme-switcher {
+  display: flex;
+  background: rgba(0,0,0,0.25);
+  border-radius: 0;
+  padding: 4px;
+  gap: 4px;
+}
+
+.theme-btn {
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+  font-family: inherit;
+  text-transform: uppercase;
+}
+
+.theme-btn.active {
+  background: var(--primary);
+  color: var(--text-dark);
+}
+
+body.theme-yakhya .theme-switcher {
+  background: var(--board-bg);
+  border: 3px solid var(--board-edge);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2), 4px 4px 0 var(--bg-deep);
+}
+body.theme-yakhya .theme-btn { font-family: 'Press Start 2P', monospace; font-size: 9px; padding: 8px 10px; }
+
+body.theme-makka .theme-switcher {
+  background: var(--board-bg);
+  border: 1px solid var(--board-edge);
+  border-radius: 50px;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+body.theme-makka .theme-btn {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(42,45,30,0.5);
+  border-radius: 50px;
+}
+body.theme-makka .theme-btn.active {
+  background: var(--primary);
+  color: #FAF6EC;
+}
+
+.sound-toggle {
+  background: rgba(0,0,0,0.25);
+  border: none;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.2s;
+}
+body.theme-yakhya .sound-toggle {
+  background: var(--board-bg);
+  border: 3px solid var(--board-edge);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2), 4px 4px 0 var(--bg-deep);
+}
+body.theme-makka .sound-toggle {
+  background: var(--board-bg);
+  border: 1px solid var(--board-edge);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px var(--shadow);
+  color: var(--primary);
+}
+
+/* ============================================ */
+/* BACKGROUND ANIMATIONS                        */
+/* ============================================ */
 .bg-canvas {
   position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
 }
-.orb {
-  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.18;
-  animation: orbDrift 12s ease-in-out infinite alternate;
-}
-.orb1 { width:400px; height:400px; background:var(--yakhya2); top:-100px; left:-100px; animation-delay:0s; }
-.orb2 { width:350px; height:350px; background:var(--adv2); bottom:-80px; right:-80px; animation-delay:-5s; }
-.orb3 { width:250px; height:250px; background:var(--accent); top:40%; left:55%; animation-delay:-8s; }
 
-@keyframes orbDrift {
-  from { transform: translate(0,0) scale(1); }
-  to   { transform: translate(40px,30px) scale(1.1); }
+/* Minecraft: floating particles (block dust) */
+.mc-particle {
+  position: absolute;
+  animation: mcFloat var(--dur, 12s) linear infinite;
+  opacity: var(--op, 0.5);
 }
-
-.stars { position:fixed; inset:0; pointer-events:none; z-index:0; }
-.star {
-  position:absolute; width:2px; height:2px; background:#fff; border-radius:50%;
-  animation: twinkle var(--d) ease-in-out infinite; opacity:0;
-}
-@keyframes twinkle {
-  0%,100% { opacity:0; transform:scale(0.6); }
-  50%      { opacity:0.9; transform:scale(1.4); }
+@keyframes mcFloat {
+  0%   { transform: translate3d(0, 110vh, 0); }
+  100% { transform: translate3d(var(--drift, 30px), -10vh, 0); }
 }
 
-/* ---- WRAPPER ---- */
+/* Makka: olive leaves */
+.olive-leaf-bg {
+  position: absolute; top: -40px;
+  animation: leafFallBg var(--dur, 18s) linear infinite;
+  opacity: var(--op, 0.4);
+}
+@keyframes leafFallBg {
+  0%   { transform: translate3d(0, -10vh, 0) rotate(0deg); }
+  50%  { transform: translate3d(var(--drift, 40px), 50vh, 0) rotate(180deg); }
+  100% { transform: translate3d(0, 110vh, 0) rotate(360deg); }
+}
+
+/* ============================================ */
+/* GAME WRAPPER                                 */
+/* ============================================ */
 .game-wrapper {
-  position:relative; z-index:1;
-  display:flex; flex-direction:column; align-items:center; gap:22px;
-  padding:24px 20px; width:100%; max-width:460px;
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 18px;
+  padding: 16px 20px;
+  width: 100%; max-width: 460px;
 }
 
-/* ---- TITLE ---- */
-.title-wrap { text-align:center; }
+/* ============================================ */
+/* TITLE                                        */
+/* ============================================ */
+.title-wrap { text-align: center; padding-top: 38px; }
+
 .title {
-  font-family:'Russo One',sans-serif;
-  font-size:clamp(34px,9vw,56px);
-  background: linear-gradient(135deg, var(--yakhya) 0%, var(--accent) 50%, var(--adv) 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  letter-spacing:3px; text-transform:uppercase;
-  animation: titleShimmer 4s ease-in-out infinite;
-  background-size: 200%;
-}
-@keyframes titleShimmer {
-  0%,100% { background-position:0% 50%; }
-  50%      { background-position:100% 50%; }
-}
-.subtitle {
-  font-size:11px; color:var(--muted); letter-spacing:3px;
-  text-transform:uppercase; margin-top:4px;
+  font-size: clamp(36px, 9vw, 56px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
 }
 
-/* ---- PLAYER CARDS ---- */
-.players { display:flex; width:100%; gap:10px; align-items:stretch; }
-.vs-label {
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  font-family:'Russo One',sans-serif; font-size:11px; color:var(--muted);
-  letter-spacing:2px; padding:0 4px;
+body.theme-yakhya .title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(22px, 6vw, 36px);
+  color: var(--primary);
+  text-shadow: 4px 4px 0 var(--bg-deep), 4px 4px 8px rgba(0,0,0,0.4);
+  letter-spacing: 4px;
 }
+
+body.theme-makka .title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(46px, 11vw, 68px);
+  color: var(--primary);
+  letter-spacing: -1px;
+  text-transform: none;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 12px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+body.theme-yakhya .subtitle {
+  font-family: 'VT323', monospace;
+  font-size: 17px;
+  color: var(--secondary);
+  text-shadow: 2px 2px 0 var(--bg-deep);
+  letter-spacing: 2px;
+}
+body.theme-makka .subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--secondary);
+  letter-spacing: 3px;
+  text-transform: none;
+}
+
+/* ============================================ */
+/* PLAYER CARDS                                 */
+/* ============================================ */
+.players { display: flex; width: 100%; gap: 10px; align-items: stretch; }
+.vs-label {
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 12px; letter-spacing: 2px;
+  padding: 0 4px;
+}
+body.theme-yakhya .vs-label { font-family: 'Press Start 2P', monospace; font-size: 10px; color: var(--text); }
+body.theme-makka  .vs-label { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--secondary); font-size: 14px; }
 
 .player-card {
-  flex:1; background:var(--card); border-radius:18px; padding:14px 10px;
-  display:flex; flex-direction:column; align-items:center; gap:5px;
-  border:1.5px solid var(--border); transition:all 0.35s ease;
-  position:relative; overflow:hidden;
+  flex: 1;
+  padding: 12px 10px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  transition: all 0.3s;
+  position: relative;
 }
-.player-card::before {
-  content:''; position:absolute; inset:0; border-radius:16px; opacity:0; transition:opacity 0.35s;
+
+body.theme-yakhya .player-card {
+  background: var(--board-bg);
+  border: 4px solid var(--board-edge);
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 4px 4px 0 var(--bg-deep);
+  color: var(--text);
 }
-.player-card.yakhya::before { background:radial-gradient(ellipse at 50% 0%, var(--yakhya-glow), transparent 70%); }
-.player-card.adv::before    { background:radial-gradient(ellipse at 50% 0%, var(--adv-glow), transparent 70%); }
-.player-card.active::before { opacity:1; }
-.player-card.active.yakhya  { border-color:var(--yakhya); }
-.player-card.active.adv     { border-color:var(--adv); }
-
-.player-symbol { font-family:'Russo One',sans-serif; font-size:26px; line-height:1; }
-.player-card.yakhya .player-symbol { color:var(--yakhya); }
-.player-card.adv    .player-symbol { color:var(--adv); }
-
-.player-name { font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:var(--text); }
-
-.player-score {
-  font-family:'Russo One',sans-serif; font-size:28px; line-height:1;
-  transition:transform 0.2s;
+body.theme-yakhya .player-card.active {
+  background: var(--cell-bg);
+  border-color: var(--primary);
+  transform: translate(-2px, -2px);
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 6px 6px 0 var(--bg-deep);
 }
-.player-card.yakhya .player-score { color:var(--yakhya); }
-.player-card.adv    .player-score { color:var(--adv); }
-.score-pop { animation:scorePop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+
+body.theme-makka .player-card {
+  background: var(--board-bg);
+  border: 1px solid var(--board-edge);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px var(--shadow);
+}
+body.theme-makka .player-card.active {
+  border-color: var(--primary);
+  border-width: 1.5px;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+.player-symbol { font-size: 26px; line-height: 1; }
+body.theme-yakhya .player-card.yakhya .player-symbol { font-family: 'Press Start 2P', monospace; color: var(--primary); font-size: 22px; text-shadow: 2px 2px 0 var(--bg-deep); }
+body.theme-yakhya .player-card.adv    .player-symbol { font-family: 'Press Start 2P', monospace; color: var(--secondary); font-size: 22px; text-shadow: 2px 2px 0 var(--bg-deep); }
+body.theme-makka .player-card.yakhya .player-symbol { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--primary); font-size: 30px; }
+body.theme-makka .player-card.adv    .player-symbol { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--secondary); font-size: 30px; }
+
+.player-name { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+body.theme-yakhya .player-name { font-family: 'VT323', monospace; font-size: 18px; color: var(--text); text-shadow: 2px 2px 0 var(--text-dark); }
+body.theme-makka  .player-name { font-family: 'Lora', serif; font-size: 13px; color: var(--text); }
+
+.player-score { font-size: 26px; line-height: 1; transition: transform 0.2s; }
+body.theme-yakhya .player-card.yakhya .player-score { font-family: 'Press Start 2P', monospace; color: var(--primary); font-size: 20px; text-shadow: 2px 2px 0 var(--bg-deep); }
+body.theme-yakhya .player-card.adv    .player-score { font-family: 'Press Start 2P', monospace; color: var(--secondary); font-size: 20px; text-shadow: 2px 2px 0 var(--bg-deep); }
+body.theme-makka  .player-card.yakhya .player-score { font-family: 'Cormorant Garamond', serif; color: var(--primary); font-size: 30px; font-weight: 600; }
+body.theme-makka  .player-card.adv    .player-score { font-family: 'Cormorant Garamond', serif; color: var(--secondary); font-size: 30px; font-weight: 600; }
+
+.score-pop { animation: scorePop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
 @keyframes scorePop { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
 
-.active-badge {
-  font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase;
-  padding:3px 10px; border-radius:20px; opacity:0; transition:opacity 0.3s;
-}
-.player-card.active .active-badge { opacity:1; }
-.player-card.active.yakhya .active-badge { background:rgba(255,179,71,0.2); color:var(--yakhya); }
-.player-card.active.adv    .active-badge { background:rgba(167,139,250,0.2); color:var(--adv); }
+.active-badge { font-size: 10px; font-weight: 800; padding: 3px 10px; opacity: 0; transition: opacity 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+.player-card.active .active-badge { opacity: 1; }
+body.theme-yakhya .active-badge { font-family: 'VT323', monospace; background: var(--primary); color: var(--text-dark); font-size: 13px; }
+body.theme-yakhya .player-card.adv.active .active-badge { background: var(--secondary); }
+body.theme-makka .active-badge { background: rgba(90,107,58,0.15); color: var(--primary); border-radius: 20px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 11px; letter-spacing: 2px; }
+body.theme-makka .player-card.adv.active .active-badge { background: rgba(184,150,104,0.15); color: var(--secondary); }
 
-/* ---- BOARD ---- */
+/* ============================================ */
+/* BOARD                                        */
+/* ============================================ */
+.board-wrap { position: relative; width: 100%; }
 .board {
-  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
-  padding:16px; background:var(--card); border-radius:24px;
-  border:1px solid var(--border); width:100%;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; padding: 14px;
+  width: 100%;
+}
+
+body.theme-yakhya .board {
+  background: var(--board-bg);
+  border: 4px solid var(--board-edge);
+  box-shadow: inset 0 -6px 0 rgba(0,0,0,0.25), 6px 6px 0 var(--bg-deep);
+}
+body.theme-makka .board {
+  background: var(--board-bg);
+  border: 1px solid var(--board-edge);
+  border-radius: 24px;
+  box-shadow: 0 12px 32px var(--shadow);
+  padding: 18px;
+  gap: 10px;
 }
 
 .cell {
-  background:var(--card2); border-radius:14px; border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Russo One',sans-serif; font-size:clamp(30px,7vw,48px);
-  cursor:pointer; transition:background 0.2s, transform 0.2s, border-color 0.2s;
-  position:relative; overflow:hidden; aspect-ratio:1; user-select:none;
-  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  background: var(--cell-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(32px, 8vw, 50px);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
-.cell:hover:not(.taken) {
-  background:rgba(255,255,255,0.07); transform:scale(1.05); border-color:rgba(255,255,255,0.25);
+
+body.theme-yakhya .cell {
+  border: 3px solid var(--cell-edge);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
 }
-.cell.taken { cursor:default; }
+body.theme-yakhya .cell:hover:not(.taken) {
+  background: #DCC9B4;
+  transform: translate(-1px, -1px);
+}
 
-.cell.x-mark { color:var(--yakhya); }
-.cell.o-mark { color:var(--adv); }
+body.theme-makka .cell {
+  border: 1px solid var(--cell-edge);
+  border-radius: 14px;
+}
+body.theme-makka .cell:hover:not(.taken) {
+  background: #FFFCF3;
+  transform: scale(1.04);
+  border-color: var(--primary);
+}
 
-.cell.x-mark .glow-bg { background:radial-gradient(circle, var(--yakhya-glow), transparent 70%); }
-.cell.o-mark .glow-bg { background:radial-gradient(circle, var(--adv-glow), transparent 70%); }
-.glow-bg { position:absolute; inset:0; border-radius:14px; }
+.cell.taken { cursor: default; }
 
-.cell-txt { position:relative; z-index:1; animation:cellPop 0.38s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+body.theme-yakhya .cell.x-mark { color: var(--primary); font-family: 'Press Start 2P', monospace; font-size: clamp(26px, 6vw, 40px); text-shadow: 3px 3px 0 var(--bg-deep); }
+body.theme-yakhya .cell.o-mark { color: var(--secondary); font-family: 'Press Start 2P', monospace; font-size: clamp(26px, 6vw, 40px); text-shadow: 3px 3px 0 var(--bg-deep); }
+body.theme-makka  .cell.x-mark { color: var(--primary); font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(40px, 10vw, 64px); font-weight: 500; }
+body.theme-makka  .cell.o-mark { color: var(--secondary); font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(40px, 10vw, 64px); font-weight: 500; }
+
+.cell-txt { position: relative; z-index: 1; animation: cellPop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
 @keyframes cellPop {
-  0%   { transform:scale(0) rotate(-20deg); opacity:0; }
-  60%  { transform:scale(1.25) rotate(5deg); }
-  100% { transform:scale(1) rotate(0deg); opacity:1; }
+  0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+  60%  { transform: scale(1.3) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
-.cell.winning { animation:winPulse 0.55s ease-in-out infinite alternate; }
-.cell.winning.x-mark { border-color:var(--yakhya); box-shadow:0 0 18px var(--yakhya-glow); }
-.cell.winning.o-mark { border-color:var(--adv);    box-shadow:0 0 18px var(--adv-glow); }
-@keyframes winPulse { from{transform:scale(1)} to{transform:scale(1.07)} }
+.cell.winning { animation: winPulse 0.6s ease-in-out infinite alternate; z-index: 2; }
+body.theme-yakhya .cell.winning { background: #F5E6C8; border-color: var(--primary); }
+body.theme-makka  .cell.winning { background: #FFFCF3; border-color: var(--primary); box-shadow: 0 0 30px rgba(90,107,58,0.3); }
+@keyframes winPulse { from{transform:scale(1)} to{transform:scale(1.08)} }
 
-/* ---- STATUS ---- */
-.status {
-  font-size:14px; color:var(--muted); text-align:center;
-  min-height:22px; letter-spacing:.5px; font-weight:700;
-  transition:opacity 0.3s;
+/* ============================================ */
+/* WIN LINE (sweeping animation)                */
+/* ============================================ */
+.win-line {
+  position: absolute;
+  height: 8px;
+  background: var(--primary);
+  z-index: 5;
+  transform-origin: 0 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+body.theme-yakhya .win-line {
+  background: var(--primary);
+  box-shadow: 0 0 0 2px var(--bg-deep), 0 0 20px var(--primary);
+  height: 10px;
+}
+body.theme-makka .win-line {
+  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+  height: 4px;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(184,150,104,0.6);
 }
 
-/* ---- RESET BUTTON ---- */
+/* ============================================ */
+/* STATUS                                       */
+/* ============================================ */
+.status { text-align: center; min-height: 24px; font-weight: 700; }
+body.theme-yakhya .status { font-family: 'VT323', monospace; font-size: 20px; color: var(--text); text-shadow: 2px 2px 0 var(--text-dark); }
+body.theme-makka  .status { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 17px; color: var(--text); letter-spacing: 0.5px; }
+
+/* ============================================ */
+/* RESET BUTTON                                 */
+/* ============================================ */
 .btn-reset {
-  background:transparent; border:1.5px solid rgba(255,255,255,0.15);
-  color:var(--muted); padding:11px 32px; border-radius:50px;
-  font-family:'Nunito',sans-serif; font-size:13px; font-weight:800;
-  cursor:pointer; letter-spacing:1.5px; text-transform:uppercase;
-  transition:all 0.2s; -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+  border: none; cursor: pointer;
+  padding: 12px 32px;
+  font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
-.btn-reset:hover { border-color:rgba(255,255,255,0.4); color:#fff; transform:scale(1.04); }
-.btn-reset:active { transform:scale(0.97); }
-@media (max-width: 480px) {
-  .orb { filter: blur(50px); opacity: 0.13; }
-  .game-wrapper { gap: 16px; padding: 16px 16px; }
-  .player-card { padding: 10px 8px; }
-  .board { gap: 8px; padding: 12px; }
+body.theme-yakhya .btn-reset {
+  background: var(--board-bg);
+  color: var(--text);
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  border: 4px solid var(--board-edge);
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 4px 4px 0 var(--bg-deep);
+  text-shadow: 2px 2px 0 var(--text-dark);
 }
+body.theme-yakhya .btn-reset:hover { background: var(--cell-bg); transform: translate(-1px, -1px); box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 5px 5px 0 var(--bg-deep); }
+body.theme-yakhya .btn-reset:active { transform: translate(2px, 2px); box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 2px 2px 0 var(--bg-deep); }
 
-/* ---- TOAST MESSAGE ---- */
+body.theme-makka .btn-reset {
+  background: transparent;
+  color: var(--primary);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  border: 1.5px solid var(--primary);
+  border-radius: 50px;
+  font-weight: 600;
+}
+body.theme-makka .btn-reset:hover { background: var(--primary); color: #FAF6EC; }
+
+/* ============================================ */
+/* TOAST MESSAGE                                */
+/* ============================================ */
 .toast {
-  position:fixed; top:20px; left:50%;
-  transform:translateX(-50%) translateY(-120px);
-  background:var(--card); border-radius:20px;
-  padding:14px 22px; text-align:center;
-  max-width:88vw; min-width:270px; z-index:1000;
-  border:1.5px solid var(--border);
+  position: fixed;
+  top: 80px; left: 50%;
+  transform: translateX(-50%) translateY(-150px);
+  padding: 14px 20px;
+  text-align: center;
+  max-width: 90vw; min-width: 280px;
+  z-index: 1000;
   transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
-  opacity:0; pointer-events:none;
-  box-shadow:0 8px 40px rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
 }
-.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
-.toast-emoji { font-size:26px; display:block; margin-bottom:5px; animation:emojiPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
-@keyframes emojiPop {
-  0%  { transform:scale(0) rotate(-15deg); }
-  70% { transform:scale(1.3) rotate(5deg); }
-  100%{ transform:scale(1) rotate(0); }
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+body.theme-yakhya .toast {
+  background: var(--board-bg);
+  border: 4px solid var(--board-edge);
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 5px 5px 0 var(--bg-deep);
+  color: var(--text);
 }
-.toast-text { font-size:14px; font-weight:800; line-height:1.4; }
-.toast.t-yakhya { border-color:var(--yakhya); }
-.toast.t-yakhya .toast-text { color:var(--yakhya); }
-.toast.t-adv    { border-color:var(--adv); }
-.toast.t-adv    .toast-text { color:var(--adv); }
-.toast.t-win    { border-color:var(--accent); }
-.toast.t-win    .toast-text { color:var(--accent); font-size:16px; }
-.toast.t-draw   { border-color:#888; }
-.toast.t-draw   .toast-text { color:#ccc; }
-.toast.t-egg    { border-color:#00e5c8; }
-.toast.t-egg    .toast-text { color:#00e5c8; font-size:13px; line-height:1.5; }
-.toast.t-egg    .toast-emoji { animation:eggWiggle 0.7s cubic-bezier(0.34,1.56,0.64,1) both; }
-@keyframes eggWiggle {
-  0%,100%{ transform:rotate(0) scale(1); }
-  20%    { transform:rotate(-14deg) scale(1.3); }
-  45%    { transform:rotate(10deg) scale(1.15); }
-  65%    { transform:rotate(-7deg) scale(1.2); }
-  82%    { transform:rotate(5deg) scale(1.05); }
+body.theme-makka .toast {
+  background: var(--board-bg);
+  border: 1.5px solid var(--board-edge);
+  border-radius: 18px;
+  box-shadow: 0 12px 40px var(--shadow);
+  color: var(--text);
 }
 
-/* ---- CONFETTI ---- */
-.confetti {
-  position:fixed; top:-10px; border-radius:2px; pointer-events:none; z-index:999;
-  animation:confettiFall var(--dur) ease-in forwards;
-}
-@keyframes confettiFall {
-  0%   { transform:translateY(0) rotate(0deg); opacity:1; }
-  100% { transform:translateY(110vh) rotate(540deg); opacity:0; }
+.toast-emoji { font-size: 26px; display: block; margin-bottom: 4px; animation: emojiPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes emojiPop { 0%{transform:scale(0) rotate(-15deg)} 70%{transform:scale(1.3) rotate(5deg)} 100%{transform:scale(1) rotate(0)} }
+
+.toast-text { font-weight: 700; line-height: 1.4; }
+body.theme-yakhya .toast-text { font-family: 'VT323', monospace; font-size: 17px; text-shadow: 2px 2px 0 var(--text-dark); letter-spacing: 0.5px; }
+body.theme-makka  .toast-text { font-family: 'Lora', serif; font-size: 14px; font-weight: 600; }
+
+.toast.t-yakhya { border-color: var(--primary); }
+body.theme-yakhya .toast.t-yakhya .toast-text { color: var(--primary); }
+body.theme-makka  .toast.t-yakhya .toast-text { color: var(--primary); }
+
+.toast.t-adv { border-color: var(--secondary); }
+body.theme-yakhya .toast.t-adv .toast-text { color: var(--secondary); }
+body.theme-makka  .toast.t-adv .toast-text { color: var(--secondary); }
+
+.toast.t-win { border-color: var(--accent); }
+body.theme-yakhya .toast.t-win .toast-text { color: var(--accent); font-size: 19px; }
+body.theme-makka  .toast.t-win .toast-text { color: var(--accent); font-size: 16px; font-weight: 700; }
+
+.toast.t-egg { }
+body.theme-yakhya .toast.t-egg { border-color: #FF55FF; }
+body.theme-yakhya .toast.t-egg .toast-text { color: #FF55FF; font-size: 16px; }
+body.theme-makka  .toast.t-egg { border-color: #C44569; }
+body.theme-makka  .toast.t-egg .toast-text { color: #C44569; font-size: 13px; font-style: italic; }
+
+.toast.t-draw { opacity: 0.95; }
+body.theme-yakhya .toast.t-draw { border-color: #AAAAAA; }
+body.theme-yakhya .toast.t-draw .toast-text { color: #DDDDDD; }
+body.theme-makka  .toast.t-draw { border-color: #888; }
+body.theme-makka  .toast.t-draw .toast-text { color: #666; }
+
+/* ============================================ */
+/* WIN PARTICLES                                */
+/* ============================================ */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+  top: -20px;
 }
 
-/* ---- DIVIDER GRID LINES ---- */
-.board::before, .board::after { display:none; }
+.pixel-block {
+  animation: pixelFall var(--dur, 2s) ease-in forwards;
+  image-rendering: pixelated;
+}
+@keyframes pixelFall {
+  0%   { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(180deg); opacity: 0; }
+}
+
+.olive-particle {
+  animation: oliveSwirl var(--dur, 3s) ease-in forwards;
+}
+@keyframes oliveSwirl {
+  0%   { transform: translateY(0) rotate(0) translateX(0); opacity: 1; }
+  50%  { transform: translateY(50vh) rotate(360deg) translateX(var(--drift, 30px)); }
+  100% { transform: translateY(110vh) rotate(720deg) translateX(0); opacity: 0; }
+}
+
+/* ============================================ */
+/* RESPONSIVE                                   */
+/* ============================================ */
+@media (max-width: 480px) {
+  .top-controls { top: 8px; right: 8px; gap: 6px; }
+  body.theme-yakhya .theme-btn { font-size: 8px; padding: 6px 8px; }
+  body.theme-makka  .theme-btn { font-size: 11px; padding: 6px 10px; }
+  .sound-toggle { width: 32px; height: 32px; font-size: 14px; }
+  .game-wrapper { gap: 14px; padding: 12px 14px; }
+  .title-wrap { padding-top: 60px; }
+  .board { gap: 6px; padding: 10px; }
+  body.theme-makka .board { padding: 12px; gap: 8px; }
+  .player-card { padding: 10px 8px; }
+}
 </style>
 </head>
-<body>
+<body class="theme-yakhya">
 
-<div class="bg-canvas">
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-  <div class="stars" id="stars"></div>
+<!-- Top controls -->
+<div class="top-controls">
+  <div class="theme-switcher" id="themeSwitcher">
+    <button class="theme-btn active" data-theme="yakhya">⚒ Yakhya</button>
+    <button class="theme-btn" data-theme="makka">🍃 Makka</button>
+  </div>
+  <button class="sound-toggle" id="soundToggle" aria-label="Son">🔊</button>
 </div>
 
+<!-- Animated background -->
+<div class="bg-canvas" id="bgCanvas"></div>
+
+<!-- Toast -->
 <div class="toast" id="toast">
   <span class="toast-emoji" id="toastEmoji">🔥</span>
   <span class="toast-text" id="toastText"></span>
 </div>
 
+<!-- Game -->
 <div class="game-wrapper">
   <div class="title-wrap">
     <div class="title" id="mainTitle">Croix Rond</div>
-    <div class="subtitle">Le seul jeu où Yakhya gagne toujours</div>
+    <div class="subtitle" id="subtitle">Le jeu où Yakhya gagne toujours</div>
   </div>
 
   <div class="players">
@@ -299,111 +674,233 @@ body {
     </div>
   </div>
 
-  <div class="board" id="board"></div>
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+    <div class="win-line" id="winLine"></div>
+  </div>
 
   <div class="status" id="status">C'est à Yakhya de jouer ! 👑</div>
   <button class="btn-reset" id="btnReset">↺  Nouvelle partie</button>
 </div>
 
 <script>
-// ---- STARS ----
-(function() {
-  const s = document.getElementById('stars');
-  for(let i=0;i<70;i++){
-    const el=document.createElement('div'); el.className='star';
-    el.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s`;
-    s.appendChild(el);
+// ============================================
+// SOUND SYSTEM (Web Audio API)
+// ============================================
+let audioCtx = null;
+let soundEnabled = true;
+
+function initAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { console.log('Web Audio non supporté'); }
   }
-})();
-
-// ---- MESSAGES ----
-const MSG = {
-  yakhya:[
-    {e:'👑', t:'Yakhya pose son coup avec une élégance royale !'},
-    {e:'🔥', t:'Yakhya est en FEU ! Inarrêtable !'},
-    {e:'⚡', t:'La précision de Yakhya est tout simplement légendaire !'},
-    {e:'🎯', t:'Yakhya vise juste, comme à son habitude !'},
-    {e:'💎', t:'Un coup de génie signé Yakhya, évidemment !'},
-    {e:'😎', t:'Yakhya voit déjà sa victoire se dessiner dans les étoiles !'},
-    {e:'🏆', t:'Yakhya joue comme un champion du monde !'},
-    {e:'✨', t:'Magnifique coup de Yakhya, il est vraiment trop fort !'},
-    {e:'🧠', t:'Yakhya calcule 10 coups d\'avance… c\'est pas fair !'},
-    {e:'🦁', t:'Yakhya rugit sur ce plateau, il domine de la tête et des épaules !'},
-  ],
-  adv:[
-    {e:'😂', t:'Bonne chance pour arrêter le grand Yakhya, haha !'},
-    {e:'😏', t:'L\'adversaire essaie… mais Yakhya a déjà le plan en tête !'},
-    {e:'🙃', t:'Courageux d\'essayer contre le légendaire Yakhya !'},
-    {e:'💀', t:'L\'adversaire joue, mais Yakhya va quand même gagner !'},
-    {e:'😬', t:'L\'adversaire tente sa chance… c\'est mignon !'},
-    {e:'🥱', t:'Yakhya laisse l\'adversaire jouer par pure gentillesse !'},
-    {e:'👀', t:'Yakhya observe calmement… il a déjà gagné dans sa tête !'},
-    {e:'🤡', t:'L\'adversaire pense pouvoir battre Yakhya ? Quelle naïveté !'},
-    {e:'🫠', t:'L\'adversaire joue… Yakhya sourit poliment et attend son moment !'},
-    {e:'🎭', t:'C\'est beau de rêver contre Yakhya, vraiment !'},
-  ],
-  yWin:[
-    {e:'🏆', t:'YAKHYA CHAMPION INCONTESTÉ !!! PERSONNE NE L\'ARRÊTE !'},
-    {e:'👑', t:'QUI D\'AUTRE QUE YAKHYA ?! ABSOLUMENT PERSONNE !'},
-    {e:'🔥', t:'YAKHYA DOMINE ENCORE ! LE ROI RESTE LE ROI !!!'},
-    {e:'🎉', t:'VICTOIRE TOTALE DE YAKHYA ! IL ÉTAIT PRÉVISIBLE DE TOUTE FAÇON !'},
-  ],
-  aWin:[
-    {e:'🤨', t:'COMPLOT ! Yakhya a été sabordé ! C\'est pas juste !'},
-    {e:'😤', t:'Yakhya laissait gagner par pure gentillesse, évidemment !'},
-    {e:'🧐', t:'Victoire suspecte ! Yakhya était clairement distrait !'},
-    {e:'🫵', t:'L\'adversaire gagne ?! Sûrement une erreur du système !'},
-  ],
-  draw:[
-    {e:'🤝', t:'Égalité ! Mais Yakhya reste le vrai gagnant dans nos cœurs !'},
-    {e:'💝', t:'Match nul ! Yakhya a épargné l\'adversaire par bonté divine !'},
-    {e:'🌟', t:'Nul, mais on sait tous que Yakhya aurait pu gagner à tout moment !'},
-  ],
-  egg:[
-    {e:'🎮', t:'Info de dernière minute : Makka devrait offrir une PS5 à Djabrail. C\'est juste une idée hein… 👀'},
-    {e:'🧱', t:'Breaking news : Makka n\'a toujours pas offert de Legos à Djabrail. La honte internationale 😤'},
-    {e:'👟', t:'Message urgent : Djabrail mérite des Nike neuves. Makka, t\'entends quelque chose là ? 👂'},
-    {e:'🎧', t:'Parenthèse culturelle : des AirPods pour Djabrail ce serait pas de refus. Makka, réfléchis bien 🤔'},
-    {e:'🚲', t:'Makka, un vélo pour Djabrail c\'est quand même pas si cher… 🚴'},
-    {e:'🍫', t:'Même des bonbons Makka ! Des bonbons ! C\'est rien du tout pour Djabrail 😭'},
-    {e:'🕹️', t:'URGENT : Djabrail a besoin d\'une Nintendo Switch. Makka, c\'est maintenant ou jamais !'},
-    {e:'📱', t:'Un iPhone pour Djabrail ! Makka fais un effort quand même 😅'},
-    {e:'🛹', t:'Un skateboard pour Djabrail ! Makka, t\'imagines même pas le bonheur que tu lui ferais 🛹'},
-    {e:'⌚', t:'Une montre pour Djabrail ! Makka, il est jamais trop tôt pour être stylé 😂'},
-    {e:'🧸', t:'Au minimum une peluche Makka ! Djabrail mérite quelque chose dans sa vie ! 🧸'},
-    {e:'🎒', t:'Un sac à dos pour Djabrail ! Makka, il faut bien mettre tous ses futurs cadeaux quelque part 🎒'},
-  ],
-  eggSecret:[
-    {e:'🕵️', t:'Makka vient d\'être détectée en train d\'espionner ce jeu… Tout va bien Djabrail 😂'},
-    {e:'🌹', t:'Makka est dans la place ! Djabrail espère qu\'elle apporte quelque chose 🎁'},
-    {e:'💌', t:'Psst… Makka, si tu lis ça, pense à Djabrail. Il attend toujours son cadeau 👀'},
-    {e:'🎪', t:'MAKKA SPOTTED ! Quelqu\'un prévient Djabrail ? Il a une liste de cadeaux toute prête !'},
-  ],
-  eggTraitor:[
-    {e:'🤔', t:'L\'adversaire gagne trop souvent… Makka, tu l\'entraînerais pas en secret ?!'},
-    {e:'😱', t:'Encore une victoire de l\'adversaire… Makka et lui sont peut-être de mèche ?!'},
-    {e:'🧐', t:'Complot niveau 2 détecté : Makka souffle les réponses à l\'adversaire. Enquête en cours.'},
-  ]
-};
-
-// ---- GAME STATE ----
-let board = Array(9).fill(null);
-let cur = 'X'; // X=Yakhya, O=Adversaire
-let over = false;
-let scores = {X:0, O:0};
-const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-
-// ---- EGG STATE ----
-let totalGames = 0;
-let eggIdx = 0;
-let titleClicks = 0; let titleTimer = null;
-let kbBuffer = '';
-function nextEgg() { const m=MSG.egg[eggIdx%MSG.egg.length]; eggIdx++; return m; }
-function fireEgg(delay=5200) {
-  setTimeout(()=>{ const m=nextEgg(); showToast([m],'t-egg',5000); }, delay);
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 }
 
-// ---- DOM ----
+function playTone(freq, duration, type='sine', volume=0.08, delay=0) {
+  if (!soundEnabled || !audioCtx) return;
+  setTimeout(() => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  }, delay);
+}
+
+function sfx(name) {
+  const theme = document.body.classList.contains('theme-makka') ? 'makka' : 'yakhya';
+  const wave = theme === 'yakhya' ? 'square' : 'sine';
+  const vol = theme === 'yakhya' ? 0.07 : 0.06;
+
+  switch(name) {
+    case 'move-y':
+      playTone(theme === 'yakhya' ? 660 : 880, 0.08, wave, vol);
+      playTone(theme === 'yakhya' ? 880 : 1108, 0.10, wave, vol*0.7, 60);
+      break;
+    case 'move-a':
+      playTone(theme === 'yakhya' ? 440 : 660, 0.08, wave, vol);
+      playTone(theme === 'yakhya' ? 587 : 880, 0.10, wave, vol*0.7, 60);
+      break;
+    case 'win':
+      if (theme === 'yakhya') {
+        // 8bit fanfare: C-E-G-C
+        playTone(523, 0.12, 'square', 0.08, 0);
+        playTone(659, 0.12, 'square', 0.08, 130);
+        playTone(784, 0.12, 'square', 0.08, 260);
+        playTone(1047, 0.3, 'square', 0.08, 390);
+      } else {
+        // Elegant chime: C-E-G arpeggio
+        playTone(523, 0.4, 'sine', 0.07, 0);
+        playTone(659, 0.4, 'sine', 0.06, 150);
+        playTone(784, 0.5, 'sine', 0.06, 300);
+        playTone(1047, 0.6, 'sine', 0.05, 500);
+      }
+      break;
+    case 'lose':
+      if (theme === 'yakhya') {
+        playTone(440, 0.15, 'square', 0.06, 0);
+        playTone(370, 0.15, 'square', 0.06, 160);
+        playTone(294, 0.25, 'square', 0.06, 320);
+      } else {
+        playTone(523, 0.3, 'sine', 0.05, 0);
+        playTone(440, 0.3, 'sine', 0.05, 250);
+        playTone(370, 0.4, 'sine', 0.04, 500);
+      }
+      break;
+    case 'draw':
+      playTone(440, 0.2, wave, vol*0.8, 0);
+      playTone(440, 0.2, wave, vol*0.8, 250);
+      break;
+    case 'egg':
+      // Surprise twinkle
+      playTone(880, 0.08, wave, vol, 0);
+      playTone(1109, 0.08, wave, vol, 80);
+      playTone(1318, 0.12, wave, vol, 160);
+      playTone(1760, 0.2, wave, vol*0.7, 280);
+      break;
+    case 'click':
+      playTone(theme === 'yakhya' ? 880 : 1200, 0.04, wave, vol*0.5);
+      break;
+  }
+}
+
+// ============================================
+// MESSAGES
+// ============================================
+const MSG = {
+  yakhya: [
+    {e:'🧮', t:'D\'après mes calculations, ce coup est mathématiquement parfait'},
+    {e:'👑', t:'Yakhya pose son pion avec la sagesse d\'un Magnus Carlsen'},
+    {e:'🤓', t:'À 8 ans, je résous des équations différentielles. Le Croix Rond c\'est easy.'},
+    {e:'📊', t:'D\'après mes calculations, l\'adversaire a 0.001% de chance de gagner'},
+    {e:'🧠', t:'Yakhya analyse 47 coups d\'avance, normal'},
+    {e:'🤔', t:'D\'après mes calculations... attends, je recalcule'},
+    {e:'♟️', t:'Yakhya joue ce Croix Rond comme une partie d\'échecs niveau Grand Maître'},
+    {e:'🎓', t:'À 8 ans Yakhya bat son père aux échecs. Le Croix Rond... bah voilà.'},
+    {e:'📐', t:'D\'après mes calculations basées sur la théorie des jeux, ce coup est dominant'},
+    {e:'🤖', t:'Yakhya pose son pion. Stockfish approuverait.'},
+    {e:'😬', t:'Magnus Carlsen attend les 10 ans de Yakhya avec inquiétude'},
+    {e:'🎻', t:'Yakhya récite Pythagore en jouant, tout en pensant quand il a froissé Djabb'},
+    {e:'💯', t:'D\'après mes calculations, je suis encore et toujours le meilleur'},
+    {e:'📚', t:'Yakhya enchaîne les coups gagnants comme il enchaîne les bonnes notes à l\'école'},
+    {e:'🌍', t:'À 8 ans Yakhya parle 4 langues, fait du violon, joue aux échecs. Multitâche.'},
+    {e:'🥺', t:'D\'après mes calculations, Makka devrait répondre à Djabb'},
+    {e:'😎', t:'Yakhya joue ce coup les yeux fermés en faisant du calcul mental'},
+    {e:'📈', t:'D\'après mes calculations approfondies sur 3 milliards de simulations, je gagne'},
+    {e:'⚡', t:'Yakhya tape son coup en 0.4 secondes. Le temps de calculer 200 variantes.'},
+    {e:'🎯', t:'D\'après mes calculations, ce coup réduit les chances de défaite à 0.000%'},
+    {e:'🔬', t:'Yakhya applique la méthode scientifique. Hypothèse : je vais gagner. Démontré.'},
+    {e:'🏛️', t:'Pythagore aurait été fier de ce coup. Yakhya le sait.'},
+  ],
+  adv: [
+    {e:'📵', t:'L\'adversaire joue. Miskine il va se faire froisser'},
+    {e:'🥶', t:'L\'adversaire prend du temps, comme Makka qui lâche des remis'},
+    {e:'💚', t:'Yakhya 1 - Toi : 0. Va la bas va las bas'},
+    {e:'👻', t:'Abandonne tu ne peux rien contre le grand Yakhya'},
+    {e:'💬', t:'L\'adversaire joue. Pendant ce temps Makka lit le 47e message de Djabrail sans répondre'},
+    {e:'😅', t:'Tu pense vraiment avoir une chance contre Yakhya ? MDRRR va dodo'},
+    {e:'🤐', t:'OLALAAAAAA'},
+    {e:'📱', t:'Yakhya pose son coup en 0.3s. Makka mettrait 47h pour un message équivalent'},
+    {e:'🤷', t:'L\'adversaire essaie. Makka aussi essaie de répondre, peut-être lundi. Ou jamais.'},
+    {e:'⏳', t:'Mouvement aussi rare qu\'une réponse de Makka avant 18h'},
+    {e:'👀', t:'Pendant que tu lis ce message, Makka a vu 14 notifs de Djabrail sans cliquer'},
+    {e:'🧐', t:'L\'adversaire pense à sa stratégie. Makka pense à comment éviter de répondre.'},
+    {e:'⏰', t:'Makka : "Vu 14:32". Djabrail attend toujours. L\'adversaire aussi va attendre sa défaite.'},
+    {e:'🍕', t:'Ta toujours le temps d\'abandonner, prend pas le risque'},
+    {e:'🫥', t:'Coup de l\'adversaire posé. Makka : "Désolé j\'ai pas vu ton message"'},
+    {e:'😬', t:'L\'adversaire bouge avec hésitation, Yakhya qui à déjà prévu la win'},
+    {e:'📵', t:'L\'adversaire joue dans le silence. Comme le téléphone de Djabrail quand il écrit à Makka.'},
+    {e:'🐢', t:'L\'adversaire pose son pion. Plus rapide qu\'une réponse de Makka, c\'est déjà ça.'},
+    {e:'🤡', t:'L\'adversaire pense pouvoir battre Yakhya ? Niveau délire : Makka qui répond avant 24h.'},
+    {e:'😴', t:'Makka dort sur tes messages. L\'adversaire dort sur ses chances de gagner.'},
+  ],
+  yWin: [
+    {e:'🏆', t:'VICTOIRE ! D\'après mes calculations c\'était mathématiquement inévitable'},
+    {e:'👑', t:'À 8 ans champion du Croix Rond. À 10 ans Magnus Carlsen 2.0.'},
+    {e:'🧪', t:'Yakhya GAGNE ! Le grand mâitre triomphe, comme toujours'},
+    {e:'💯', t:'VICTOIRE ! D\'après mes calculations on est personne est au dessus de moi'},
+    {e:'💚', t:'Yakhya l\'emporte ! Cela étonne qui ?'},
+    {e:'🎓', t:'GAGNANT ! Yakhya rejoint la liste des génies : Einstein, Newton, et lui-même.'},
+    {e:'🔥', t:'YAKHYA CHAMPION ! 8 ans, 4 langues, 0 défaite. La légende continue.'},
+  ],
+  aWin: [
+    {e:'🤨', t:'Erreur dans la matrice. D\'après mes calculations Yakhya devait gagner. RECALCUL !'},
+    {e:'🧐', t:'L\'adversaire gagne... Yakhya analysera ce match pendant 3 semaines comme une partie d\'échecs perdue'},
+    {e:'🥺', t:'Cette défaite ne compte pas. Yakhya pensait à pourquoi Makka à laissé Djabb en remis.'},
+    {e:'🕵️', t:'Impossible mathématiquement. Yakhya soupçonne un complot. Enquête en cours.'},
+    {e:'😏', t:'L\'adversaire "gagne". Yakhya l\'a laissé gagner par compassion.'},
+    {e:'📵', t:'Yakhya distrait : il s\'imaginait jouer a Minecraft avec son bro Djabb'},
+  ],
+  draw: [
+    {e:'🔢', t:'Match nul. D\'après mes calculations c\'est inacceptable. RECOMPTAGE !'},
+    {e:'😅', t:'Égalité ambiguë. Djabb à mal codé ce jeu'},
+    {e:'♟️', t:'Nul. Yakhya étudiera chaque case pendant 3h comme une finale d\'échecs'},
+    {e:'🤷', t:'Match nul. D\'après mes calculations... ok je sais pas comment c\'est arrivé'},
+    {e:'💚', t:'Égalité ! Sérieusement tout ça ?????'},
+  ],
+  egg: [
+    {e:'🎮', t:'MAKKA, info urgente : Djabrail mérite une PS5. C\'est dans les calculs de Yakhya.'},
+    {e:'🧱', t:'Breaking news : Makka n\'a toujours pas offert de Legos à Djabrail. La honte continue.'},
+    {e:'👟', t:'D\'après les calculations de Yakhya, Djabrail mérite des Nike. Makka, ton avis ?'},
+    {e:'🎧', t:'Des AirPods pour Djabrail ! Makka réfléchis (et réponds aux messages tant qu\'à faire)'},
+    {e:'🚲', t:'Makka, un vélo pour Djabrail = 0 frais d\'essence. Comment ira t-il au travail sinon ?'},
+    {e:'🍫', t:'Même des bonbons Makka ! Juste des bonbons !'},
+    {e:'🕹️', t:'Donne des nouvelles au lieu de lâcher des gros remis la'},
+    {e:'📱', t:'Un iPhone pour Djabrail. Makka, t\'est riche de toute façon.'},
+    {e:'🛹', t:'Financer la license de pilote serait un bon investissement tu pense pas ?'},
+    {e:'⌚', t:'Une montre pour Djabrail. Comme ça il voit combien de temps tu prends à répondre.'},
+    {e:'🧸', t:'Tkt il va se rattraper.'},
+    {e:'💌', t:'Seule façon que tu voient mes messages, donc voila Bonjour.'},
+    {e:'⏰', t:'Vu à 14h32. Pas de réponse. Une nouvelle moto et je te pardonne.'},
+    {e:'🎂', t:'Djabrail a 8 anniversaires ratés à rattraper. Makka, l\'addition s\'accumule.'},
+  ],
+  eggSecret: [
+    {e:'🕵️', t:'Makka SPOTTED ! Djabrail prépare déjà sa liste de cadeaux !'},
+    {e:'🌹', t:'Makka est dans la place ! Djabrail espère qu\'elle apporte un cadeau (et une réponse)'},
+    {e:'👻', t:'Psst... Makka, on t\'a vue. Réponds aux messages de Djabrail.'},
+    {e:'📲', t:'NOTIF MAKKA ! Djabrail tremble. C\'est peut-être enfin la réponse...'},
+  ],
+  eggTraitor: [
+    {e:'🤔', t:'L\'adversaire gagne trop. Yakhya soupçonne de tricherie.'},
+    {e:'😱', t:'L\'adversaire s\'améliore. D\'après mes calculations, je vais le balance à Djabb !'},
+    {e:'🧐', t:'Si l\'adversaire regagne encore c\'est pas une vrai Talipova.'},
+  ],
+};
+
+// ============================================
+// GAME STATE
+// ============================================
+let board = Array(9).fill(null);
+let cur = 'X';
+let over = false;
+let scores = {X:0, O:0};
+let totalGames = 0;
+let eggIdx = 0;
+let titleClicks = 0;
+let titleTimer = null;
+let kbBuffer = '';
+
+const WIN_LINES = [
+  {combo:[0,1,2], type:'row',  idx:0},
+  {combo:[3,4,5], type:'row',  idx:1},
+  {combo:[6,7,8], type:'row',  idx:2},
+  {combo:[0,3,6], type:'col',  idx:0},
+  {combo:[1,4,7], type:'col',  idx:1},
+  {combo:[2,5,8], type:'col',  idx:2},
+  {combo:[0,4,8], type:'diag', idx:0},
+  {combo:[2,4,6], type:'diag', idx:1},
+];
+
+// ============================================
+// DOM REFS
+// ============================================
 const boardEl  = document.getElementById('board');
 const statusEl = document.getElementById('status');
 const toast    = document.getElementById('toast');
@@ -413,145 +910,364 @@ const scoreY   = document.getElementById('scoreY');
 const scoreA   = document.getElementById('scoreA');
 const cardY    = document.getElementById('cardY');
 const cardA    = document.getElementById('cardA');
+const winLine  = document.getElementById('winLine');
 
-// ---- BUILD BOARD ----
+// ============================================
+// THEME SYSTEM
+// ============================================
+function setTheme(name) {
+  document.body.classList.remove('theme-yakhya', 'theme-makka');
+  document.body.classList.add('theme-' + name);
+  document.querySelectorAll('.theme-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.theme === name);
+  });
+  document.querySelector('meta[name="theme-color"]').content =
+    name === 'yakhya' ? '#5BAE00' : '#EDE4D0';
+  try { localStorage.setItem('croix-rond-theme', name); } catch(e) {}
+  rebuildBackground();
+}
+
+document.getElementById('themeSwitcher').addEventListener('click', (e) => {
+  const btn = e.target.closest('.theme-btn');
+  if (btn) {
+    initAudio();
+    sfx('click');
+    setTheme(btn.dataset.theme);
+  }
+});
+
+// Load saved theme
+try {
+  const saved = localStorage.getItem('croix-rond-theme');
+  if (saved === 'makka') setTheme('makka');
+} catch(e) {}
+
+// ============================================
+// SOUND TOGGLE
+// ============================================
+const soundBtn = document.getElementById('soundToggle');
+soundBtn.addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  soundBtn.textContent = soundEnabled ? '🔊' : '🔇';
+  initAudio();
+  if (soundEnabled) sfx('click');
+});
+
+// ============================================
+// BACKGROUND ANIMATIONS
+// ============================================
+const bgCanvas = document.getElementById('bgCanvas');
+
+function rebuildBackground() {
+  bgCanvas.innerHTML = '';
+  const theme = document.body.classList.contains('theme-makka') ? 'makka' : 'yakhya';
+
+  if (theme === 'yakhya') {
+    // Floating Minecraft particles (block dust)
+    const colors = ['#FFFFFF', '#FFEEAA', '#E0E0E0', '#FFE48F'];
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'mc-particle';
+      const sz = 3 + Math.random() * 4;
+      p.style.cssText = `
+        width:${sz}px;height:${sz}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        left:${Math.random()*100}vw;
+        top:${Math.random()*100}vh;
+        --dur:${10 + Math.random()*15}s;
+        --drift:${(Math.random()-0.5)*100}px;
+        --op:${0.3 + Math.random()*0.4};
+        animation-delay:${-Math.random()*15}s;
+      `;
+      bgCanvas.appendChild(p);
+    }
+  } else {
+    // Olive leaves falling
+    const leafSVG = `<svg width="20" height="26" viewBox="0 0 24 30" fill="none">
+      <path d="M12 2 C 4 6, 2 16, 12 28 C 22 16, 20 6, 12 2 Z" fill="#5A6B3A"/>
+      <path d="M12 4 L12 26" stroke="#3D4A26" stroke-width="0.4" opacity="0.6"/>
+    </svg>`;
+    for (let i = 0; i < 12; i++) {
+      const leaf = document.createElement('div');
+      leaf.className = 'olive-leaf-bg';
+      leaf.innerHTML = leafSVG;
+      leaf.style.cssText = `
+        left:${Math.random()*100}vw;
+        --dur:${14 + Math.random()*14}s;
+        --drift:${(Math.random()-0.5)*200}px;
+        --op:${0.3 + Math.random()*0.3};
+        animation-delay:${-Math.random()*25}s;
+        transform:scale(${0.6 + Math.random()*0.7});
+      `;
+      bgCanvas.appendChild(leaf);
+    }
+  }
+}
+
+// ============================================
+// BUILD BOARD
+// ============================================
 function buildBoard() {
-  boardEl.innerHTML='';
-  for(let i=0;i<9;i++){
-    const c=document.createElement('div');
-    c.className='cell'; c.dataset.i=i;
-    c.addEventListener('click',()=>click(i));
+  boardEl.innerHTML = '';
+  for (let i = 0; i < 9; i++) {
+    const c = document.createElement('div');
+    c.className = 'cell';
+    c.dataset.i = i;
+    c.addEventListener('click', () => {
+      initAudio();
+      click(i);
+    });
     boardEl.appendChild(c);
   }
 }
 
-// ---- TOAST ----
+// ============================================
+// TOAST
+// ============================================
 let tid;
-function showToast(pool, cls, duration=2600) {
-  const m = pool[Math.floor(Math.random()*pool.length)];
+function showToast(pool, cls, duration=2800) {
+  const m = pool[Math.floor(Math.random() * pool.length)];
   toastE.textContent = m.e;
   toastT.textContent = m.t;
   toast.className = 'toast ' + cls;
   void toast.offsetWidth;
   toast.classList.add('show');
   clearTimeout(tid);
-  tid = setTimeout(()=>toast.classList.remove('show'), duration);
+  tid = setTimeout(() => toast.classList.remove('show'), duration);
 }
 
-// ---- WIN CHECK ----
+// ============================================
+// WIN CHECK
+// ============================================
 function checkWin(p) {
-  for(const c of wins) if(c.every(i=>board[i]===p)) return c;
+  for (const w of WIN_LINES) {
+    if (w.combo.every(i => board[i] === p)) return w;
+  }
   return null;
 }
 
-// ---- CLICK ----
+// ============================================
+// WIN ANIMATIONS PER TYPE
+// ============================================
+function drawWinLine(winData) {
+  const cells = boardEl.querySelectorAll('.cell');
+  const c1 = cells[winData.combo[0]];
+  const c3 = cells[winData.combo[2]];
+  if (!c1 || !c3) return;
+
+  const r1 = c1.getBoundingClientRect();
+  const r3 = c3.getBoundingClientRect();
+  const wrap = winLine.parentElement.getBoundingClientRect();
+
+  const startX = r1.left + r1.width/2 - wrap.left;
+  const startY = r1.top + r1.height/2 - wrap.top;
+  const endX   = r3.left + r3.width/2 - wrap.left;
+  const endY   = r3.top + r3.height/2 - wrap.top;
+
+  const length = Math.hypot(endX - startX, endY - startY);
+  const angle  = Math.atan2(endY - startY, endX - startX);
+
+  winLine.style.left = startX + 'px';
+  winLine.style.top  = startY + 'px';
+  winLine.style.width = '0px';
+  winLine.style.transform = `translateY(-50%) rotate(${angle}rad)`;
+  winLine.style.opacity = '1';
+
+  // Animate
+  requestAnimationFrame(() => {
+    winLine.style.transition = 'width 0.5s cubic-bezier(0.22,1,0.36,1)';
+    winLine.style.width = length + 'px';
+  });
+
+  // Fade out after the sweep
+  setTimeout(() => {
+    winLine.style.transition = 'opacity 0.5s';
+    winLine.style.opacity = '0';
+  }, 2500);
+}
+
+function launchWinParticles() {
+  const theme = document.body.classList.contains('theme-makka') ? 'makka' : 'yakhya';
+
+  if (theme === 'yakhya') {
+    // Pixel blocks falling
+    const colors = ['#FFAA00', '#50C878', '#FF5555', '#FFE48F', '#7CFC00', '#FFFFFF'];
+    for (let i = 0; i < 70; i++) {
+      setTimeout(() => {
+        const p = document.createElement('div');
+        p.className = 'particle pixel-block';
+        const sz = 8 + Math.random() * 8;
+        p.style.cssText = `
+          width:${sz}px;height:${sz}px;
+          background:${colors[Math.floor(Math.random()*colors.length)]};
+          left:${5+Math.random()*90}vw;
+          --dur:${1.5 + Math.random()*2}s;
+          box-shadow:inset 0 -2px 0 rgba(0,0,0,0.3);
+        `;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 4000);
+      }, i * 30);
+    }
+  } else {
+    // Olive leaves + gold dust
+    const leafSVG = `<svg width="24" height="32" viewBox="0 0 24 30" fill="none">
+      <path d="M12 2 C 4 6, 2 16, 12 28 C 22 16, 20 6, 12 2 Z" fill="#5A6B3A"/>
+      <path d="M12 4 L12 26" stroke="#3D4A26" stroke-width="0.4"/>
+    </svg>`;
+    const goldSVG = `<svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="4" fill="#B89668"/></svg>`;
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => {
+        const p = document.createElement('div');
+        p.className = 'particle olive-particle';
+        p.innerHTML = Math.random() > 0.4 ? leafSVG : goldSVG;
+        p.style.cssText = `
+          left:${5+Math.random()*90}vw;
+          --dur:${2.5 + Math.random()*2}s;
+          --drift:${(Math.random()-0.5)*150}px;
+          transform:scale(${0.7+Math.random()*0.7});
+        `;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 5000);
+      }, i * 50);
+    }
+  }
+}
+
+// ============================================
+// EGG SYSTEM
+// ============================================
+function nextEgg() {
+  const m = MSG.egg[eggIdx % MSG.egg.length];
+  eggIdx++;
+  return m;
+}
+function fireEgg(delay = 5200) {
+  setTimeout(() => {
+    const m = nextEgg();
+    showToast([m], 't-egg', 5500);
+    sfx('egg');
+  }, delay);
+}
+
+// ============================================
+// CLICK HANDLER
+// ============================================
 function click(idx) {
-  if(over || board[idx]) return;
-  board[idx]=cur;
+  if (over || board[idx]) return;
+  board[idx] = cur;
+
   const cells = boardEl.querySelectorAll('.cell');
   const cell  = cells[idx];
-  cell.classList.add('taken', cur==='X'?'x-mark':'o-mark');
-  const gb=document.createElement('div'); gb.className='glow-bg'; cell.appendChild(gb);
-  const txt=document.createElement('span'); txt.className='cell-txt';
-  txt.textContent = cur==='X'?'✕':'○'; cell.appendChild(txt);
+  cell.classList.add('taken', cur === 'X' ? 'x-mark' : 'o-mark');
+  const txt = document.createElement('span');
+  txt.className = 'cell-txt';
+  txt.textContent = cur === 'X' ? '✕' : '○';
+  cell.appendChild(txt);
 
-  showToast(cur==='X'?MSG.yakhya:MSG.adv, cur==='X'?'t-yakhya':'t-adv');
+  sfx(cur === 'X' ? 'move-y' : 'move-a');
+  showToast(cur === 'X' ? MSG.yakhya : MSG.adv, cur === 'X' ? 't-yakhya' : 't-adv');
 
-  const wc = checkWin(cur);
-  if(wc) {
-    over=true;
+  const win = checkWin(cur);
+  if (win) {
+    over = true;
     totalGames++;
-    wc.forEach(i=>cells[i].classList.add('winning'));
-    if(cur==='X'){
+    win.combo.forEach(i => cells[i].classList.add('winning'));
+    drawWinLine(win);
+
+    if (cur === 'X') {
       scores.X++;
-      scoreY.textContent=scores.X;
+      scoreY.textContent = scores.X;
       scoreY.classList.add('score-pop');
-      setTimeout(()=>scoreY.classList.remove('score-pop'),400);
-      setTimeout(()=>{ showToast(MSG.yWin,'t-win',4500); confetti(); },500);
-      statusEl.textContent='🏆 Yakhya GAGNE ! Il est absolument inarrêtable !';
-      // Easter egg : toutes les 3 victoires de Yakhya
-      if(scores.X % 3 === 0) fireEgg(5200);
+      setTimeout(() => scoreY.classList.remove('score-pop'), 400);
+      setTimeout(() => { showToast(MSG.yWin, 't-win', 4500); sfx('win'); launchWinParticles(); }, 600);
+      statusEl.textContent = '🏆 Yakhya GAGNE ! Comme prévu mathématiquement.';
+      if (scores.X % 3 === 0) fireEgg(5500);
     } else {
       scores.O++;
-      scoreA.textContent=scores.O;
+      scoreA.textContent = scores.O;
       scoreA.classList.add('score-pop');
-      setTimeout(()=>scoreA.classList.remove('score-pop'),400);
-      setTimeout(()=>showToast(MSG.aWin,'t-adv',4000),500);
-      statusEl.textContent='🤨 L\'adversaire gagne… c\'est très suspect !';
-      // Easter egg : adversaire gagne 2 ou 4 fois
-      if(scores.O === 2 || scores.O === 4 || scores.O === 6) fireEgg(4800);
+      setTimeout(() => scoreA.classList.remove('score-pop'), 400);
+      setTimeout(() => { showToast(MSG.aWin, 't-adv', 4000); sfx('lose'); }, 600);
+      statusEl.textContent = '🤨 L\'adversaire gagne... très suspect.';
+      if (scores.O === 2 || scores.O === 4 || scores.O === 6) {
+        setTimeout(() => showToast(MSG.eggTraitor, 't-egg', 5000), 5000);
+      }
     }
-    // Easter egg : toutes les 5 parties
-    if(totalGames % 5 === 0) fireEgg(scores.X%3===0 ? 11000 : 5200);
-    setActive(null); return;
+    if (totalGames % 5 === 0) fireEgg(scores.X % 3 === 0 ? 11500 : 5500);
+    setActive(null);
+    return;
   }
 
-  if(board.every(v=>v)) {
-    over=true;
+  if (board.every(v => v)) {
+    over = true;
     totalGames++;
-    setTimeout(()=>showToast(MSG.draw,'t-draw',4000),400);
-    statusEl.textContent='🤝 Match nul ! Yakhya reste le roi de nos cœurs !';
-    // Easter egg toutes les 5 parties même sur nul
-    if(totalGames % 5 === 0) fireEgg(5000);
-    setActive(null); return;
+    setTimeout(() => { showToast(MSG.draw, 't-draw', 4000); sfx('draw'); }, 600);
+    statusEl.textContent = '🤝 Match nul ! Recomptage demandé par Yakhya.';
+    if (totalGames % 5 === 0) fireEgg(5500);
+    setActive(null);
+    return;
   }
 
-  cur = cur==='X'?'O':'X';
+  cur = cur === 'X' ? 'O' : 'X';
   setActive(cur);
-  statusEl.textContent = cur==='X' ? 'C\'est à Yakhya de jouer ! 👑' : 'L\'adversaire tente sa chance…';
+  statusEl.textContent = cur === 'X' ? 'C\'est à Yakhya de jouer ! 👑' : 'L\'adversaire tente sa chance...';
 }
 
-// ---- ACTIVE ----
 function setActive(p) {
-  cardY.classList.toggle('active', p==='X');
-  cardA.classList.toggle('active', p==='O');
+  cardY.classList.toggle('active', p === 'X');
+  cardA.classList.toggle('active', p === 'O');
 }
 
-// ---- CONFETTI ----
-function confetti() {
-  const cols=['#ffb347','#ff4d6d','#a78bfa','#00e5ff','#00ff88','#fff'];
-  for(let i=0;i<70;i++){
-    setTimeout(()=>{
-      const d=document.createElement('div'); d.className='confetti';
-      const sz=6+Math.random()*8;
-      d.style.cssText=`left:${5+Math.random()*90}vw;width:${sz}px;height:${sz}px;background:${cols[Math.floor(Math.random()*cols.length)]};--dur:${1.6+Math.random()*2}s;animation-delay:0s`;
-      document.body.appendChild(d);
-      setTimeout(()=>d.remove(),4000);
-    }, i*45);
-  }
-}
-
-// ---- RESET ----
-document.getElementById('btnReset').addEventListener('click',()=>{
-  board=Array(9).fill(null); cur='X'; over=false;
-  buildBoard(); setActive('X');
-  statusEl.textContent='C\'est à Yakhya de jouer ! 👑';
+// ============================================
+// RESET
+// ============================================
+document.getElementById('btnReset').addEventListener('click', () => {
+  initAudio();
+  sfx('click');
+  board = Array(9).fill(null);
+  cur = 'X';
+  over = false;
+  winLine.style.opacity = '0';
+  winLine.style.transition = 'none';
+  winLine.style.width = '0px';
+  buildBoard();
+  setActive('X');
+  statusEl.textContent = 'C\'est à Yakhya de jouer ! 👑';
 });
 
-// ---- INIT ----
-buildBoard(); setActive('X');
-
-// ---- EASTER EGG : triple clic sur le titre ----
-document.getElementById('mainTitle').addEventListener('click',()=>{
+// ============================================
+// EASTER EGGS
+// ============================================
+document.getElementById('mainTitle').addEventListener('click', () => {
   titleClicks++;
   clearTimeout(titleTimer);
-  titleTimer = setTimeout(()=>{ titleClicks=0; }, 600);
-  if(titleClicks >= 3){
-    titleClicks=0;
-    const m=MSG.eggSecret[Math.floor(Math.random()*MSG.eggSecret.length)];
-    showToast([m],'t-egg',5500);
+  titleTimer = setTimeout(() => { titleClicks = 0; }, 600);
+  if (titleClicks >= 3) {
+    titleClicks = 0;
+    initAudio();
+    const m = MSG.eggSecret[Math.floor(Math.random() * MSG.eggSecret.length)];
+    showToast([m], 't-egg', 5500);
+    sfx('egg');
   }
 });
 
-// ---- EASTER EGG : taper "makka" au clavier ----
-document.addEventListener('keydown',(e)=>{
+document.addEventListener('keydown', (e) => {
   kbBuffer = (kbBuffer + e.key.toLowerCase()).slice(-5);
-  if(kbBuffer === 'makka'){
-    kbBuffer='';
-    const m=MSG.eggSecret[Math.floor(Math.random()*MSG.eggSecret.length)];
-    showToast([m],'t-egg',5500);
+  if (kbBuffer === 'makka') {
+    kbBuffer = '';
+    initAudio();
+    const m = MSG.eggSecret[Math.floor(Math.random() * MSG.eggSecret.length)];
+    showToast([m], 't-egg', 5500);
+    sfx('egg');
   }
 });
+
+// ============================================
+// INIT
+// ============================================
+buildBoard();
+setActive('X');
+rebuildBackground();
 </script>
 
 <script>
