@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Croix Rond – Le jeu de Yakhya</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#07071a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Croix Rond">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -545,6 +552,15 @@ document.addEventListener('keydown',(e)=>{
     showToast([m],'t-egg',5500);
   }
 });
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(err => console.log('SW non enregistré :', err));
+  });
+}
 </script>
 </body>
 </html>
